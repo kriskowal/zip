@@ -1,0 +1,35 @@
+{
+    "name": "zip",
+    "description": "An implementation of unzip for JavaScript",
+    "version": "0.0.0",
+    "homepage": "http://github.com/kriskowal/zip",
+    "contributors": [
+        "Tom Robinson (http://tlrobinson.net/)",
+        "Kris Kowal <kris@cixar.com> (http://github.com/kriskowal/)"
+    ],
+    "bugs": {
+        "mail": "kris@cixar.com",
+        "web": "http://github.com/kriskowal/zip/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/kriskowal/zip/raw/master/LICENSE"
+        }
+    ],
+    "main": "zip.js",
+    "modules": {
+        "inflate": "./lib/inflate.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/kriskowal/zip.git"
+    },
+    "engines": {
+        "node": ">=0.3.0"
+    },
+    "keywords": [
+        "zip",
+        "compression"
+    ]
+}
