@@ -1,4 +1,7 @@
 
+0.0.1
+ - fixed a dependency on q-io
+
 0.0.0
  - ported from Tom Robinson's
    https://github.com/tlrobinson/zipjs for Narwhal

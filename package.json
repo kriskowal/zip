@@ -1,7 +1,7 @@
 {
     "name": "zip",
     "description": "An implementation of unzip for JavaScript",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "homepage": "http://github.com/kriskowal/zip",
     "contributors": [
         "Tom Robinson (http://tlrobinson.net/)",
@@ -24,6 +24,9 @@
     "repository": {
         "type": "git",
         "url": "http://github.com/kriskowal/zip.git"
+    },
+    "dependencies": {
+        "q-io": "0.0.4"
     },
     "engines": {
         "node": ">=0.3.0"
