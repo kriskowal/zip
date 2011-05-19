@@ -1,4 +1,11 @@
 
+0.0.3
+ - Fixed for NPM 1.0
+
+0.0.2
+ - Removed a spurious buffer-io file that was confusing
+   the new Node module search algorithm.
+
 0.0.1
  - fixed a dependency on q-io
 
