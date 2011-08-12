@@ -1,7 +1,7 @@
 {
     "name": "zip",
+    "version": "0.0.4",
     "description": "An implementation of unzip for JavaScript",
-    "version": "0.0.3",
     "keywords": [
         "zip",
         "compression"
@@ -23,16 +23,13 @@
         }
     ],
     "main": "zip.js",
-    "modules": {
-        "inflate": "./lib/inflate.js"
-    },
     "repository": {
         "type": "git",
         "url": "git://github.com/kriskowal/zip.git"
     },
     "dependencies": {
-        "q": "0.2.10",
-        "q-io": "0.0.4",
+        "q": "0.7.1",
+        "q-io": "0.0.8",
         "q-io-buffer": "0.0.0"
     },
     "devDependencies": {},

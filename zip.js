@@ -1,7 +1,7 @@
 // Tom Robinson
 // Kris Kowal
 
-var INFLATE = require("./lib/inflate");
+var INFLATE = require("./inflate");
 var Buffer = require("buffer").Buffer;
 
 var LOCAL_FILE_HEADER = 0x04034b50;
@@ -9,6 +9,8 @@ var CENTRAL_DIRECTORY_FILE_HEADER = 0x02014b50;
 var END_OF_CENTRAL_DIRECTORY_RECORD = 0x06054b50;
 
 var Reader = exports.Reader = function (data) {
+    if (!(this instanceof Reader))
+        return new Reader(data);
     this._data = data;
     this._offset = 0;
 }
