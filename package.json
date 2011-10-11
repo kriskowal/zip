@@ -1,6 +1,6 @@
 {
     "name": "zip",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "An implementation of unzip for JavaScript",
     "keywords": [
         "zip",
@@ -28,9 +28,9 @@
         "url": "git://github.com/kriskowal/zip.git"
     },
     "dependencies": {
-        "q": "0.7.1",
-        "q-io": "0.0.8",
-        "q-io-buffer": "0.0.1"
+        "q": "0.7.2",
+        "q-io": "0.0.11",
+        "q-io-buffer": "0.0.2"
     },
     "devDependencies": {},
     "engines": {
