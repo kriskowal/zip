@@ -288,15 +288,13 @@ Reader.prototype.iterator = function () {
             stream.seek(centralHeader.local_file_header_offset);
             var localHeader = stream.readLocalFileHeader();
 
-            var uncompressed = null;
-            if (localHeader.file_name.slice(-1) !== "/") {
-                uncompressed = stream.readUncompressed(centralHeader.compressed_size, centralHeader.compression_method);
-            }
+    		// dont read the content just save the position for later use
+			var start = stream.position();
 
             // seek back to the next central directory header
             stream.seek(saved);
 
-            return new Entry(localHeader, uncompressed);
+            return new Entry(localHeader, stream, start, centralHeader.compressed_size, centralHeader.compression_method);
         }
     };
 };
@@ -334,9 +332,13 @@ Reader.prototype.toObject = function (charset) {
 Reader.prototype.close = function (mode, options) {
 };
 
-var Entry = exports.Entry = function (header, stream) {
+var Entry = exports.Entry = function (header, realStream, start, compressedSize, compressionMethod) {
     this._header = header;
-    this._stream = stream;
+	this._realStream = realStream;
+    this._stream = null;
+	this._start = start;
+	this._compressedSize = compressedSize;
+	this._compressionMethod = compressionMethod;
 };
 
 Entry.prototype.getName = function () {
@@ -352,6 +354,12 @@ Entry.prototype.isDirectory = function () {
 };
 
 Entry.prototype.getData = function () {
+	if (this._stream == null) {
+		var bookmark = this._realStream.position();
+		this._realStream.seek(this._start);
+		this._stream = this._realStream.readUncompressed(this._compressedSize, this._compressionMethod);
+		this._realStream.seek(bookmark);
+	}
     return this._stream;
 };
 
