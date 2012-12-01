@@ -387,6 +387,10 @@ Entry.prototype.isDirectory = function () {
     return this.getName().slice(-1) === "/";
 };
 
+Entry.prototype.lastModified = function () {
+    return decodeDateTime(this._header.last_mod_file_date, this._header.last_mod_file_time);
+};
+
 Entry.prototype.getData = function () {
 	if (this._stream == null) {
 		var bookmark = this._realStream.position();
@@ -424,4 +428,15 @@ var numberToBytesBE = function (number, length) {
         bytes[length-i-1] = (number >> (8*i)) & 0xFF;
     return new Buffer(bytes);
 };
+
+var decodeDateTime = function (date, time) {
+    return new Date(
+        (date >>> 9) + 1980,
+        ((date >>> 5) & 15) - 1,
+        (date) & 31,
+        (time >>> 11) & 31,
+        (time >>> 5) & 63,
+        (time & 63) * 2
+    );
+}
 
