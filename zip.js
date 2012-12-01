@@ -3,6 +3,7 @@
 
 var INFLATE = require("./inflate");
 var Buffer = require("buffer").Buffer;
+var fs = require("fs");
 
 var LOCAL_FILE_HEADER = 0x04034b50;
 var CENTRAL_DIRECTORY_FILE_HEADER = 0x02014b50;
@@ -11,12 +12,45 @@ var END_OF_CENTRAL_DIRECTORY_RECORD = 0x06054b50;
 var Reader = exports.Reader = function (data) {
     if (!(this instanceof Reader))
         return new Reader(data);
-    this._data = data;
+	if (data instanceof Buffer)
+		this._source = new BufferSource(data);
+	else
+		this._source = new FdSource(data);
     this._offset = 0;
 }
 
+function FdSource(fd) {
+	this._fileLength = fs.fstatSync(fd).size;
+	this.length = function() {
+		return this._fileLength;
+	}
+	this.read = function(start, length) {
+		var result = new Buffer(length);
+		while (length > 0) {
+			var pos = 0;
+			var toRead = length > 8192? 8192: length;
+			fs.readSync(fd, result, pos, toRead, start);
+			length -= toRead;
+			start += toRead;
+			pos += toRead;
+		}
+		return result;
+	}
+}
+
+function BufferSource(buffer) {
+	this._buffer = buffer;
+	this.length = function() {
+		return buffer.length;
+	}
+	this.read = function (start, length) {
+		var bytes = this._buffer.slice(start, start+length);
+		return bytes;
+	}
+}
+
 Reader.prototype.length = function () {
-    return this._data.length;
+	return this._source.length();
 }
 
 Reader.prototype.position = function () {
@@ -28,9 +62,9 @@ Reader.prototype.seek = function (offset) {
 }
 
 Reader.prototype.read = function (length) {
-    var bytes = this._data.slice(this._offset, this._offset+length);
-    this._offset += length;
-    return bytes;
+	var bytes = this._source.read(this._offset, length);
+	this._offset += length;
+	return bytes;
 }
 
 Reader.prototype.readInteger = function (length, bigEndian) {
@@ -288,15 +322,13 @@ Reader.prototype.iterator = function () {
             stream.seek(centralHeader.local_file_header_offset);
             var localHeader = stream.readLocalFileHeader();
 
-            var uncompressed = null;
-            if (localHeader.file_name.slice(-1) !== "/") {
-                uncompressed = stream.readUncompressed(centralHeader.compressed_size, centralHeader.compression_method);
-            }
+			// dont read the content just save the position for later use
+			var start = stream.position();
 
             // seek back to the next central directory header
             stream.seek(saved);
 
-            return new Entry(localHeader, uncompressed);
+            return new Entry(localHeader, stream, start, centralHeader.compressed_size, centralHeader.compression_method);
         }
     };
 };
@@ -334,9 +366,13 @@ Reader.prototype.toObject = function (charset) {
 Reader.prototype.close = function (mode, options) {
 };
 
-var Entry = exports.Entry = function (header, stream) {
+var Entry = exports.Entry = function (header, realStream, start, compressedSize, compressionMethod) {
     this._header = header;
-    this._stream = stream;
+	this._realStream = realStream;
+    this._stream = null;
+	this._start = start;
+	this._compressedSize = compressedSize;
+	this._compressionMethod = compressionMethod;
 };
 
 Entry.prototype.getName = function () {
@@ -352,6 +388,12 @@ Entry.prototype.isDirectory = function () {
 };
 
 Entry.prototype.getData = function () {
+	if (this._stream == null) {
+		var bookmark = this._realStream.position();
+		this._realStream.seek(this._start);
+		this._stream = this._realStream.readUncompressed(this._compressedSize, this._compressionMethod);
+		this._realStream.seek(bookmark);
+	}
     return this._stream;
 };
 
