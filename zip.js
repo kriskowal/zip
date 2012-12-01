@@ -93,10 +93,10 @@ Reader.prototype.readUncompressed = function (length, method) {
 Reader.prototype.readStructure = function () {
     var stream = this;
     var structure = {};
-    
+
     // local file header signature     4 bytes  (0x04034b50)
     structure.signature = stream.readInteger(4);
-    
+
     switch (structure.signature) {
         case LOCAL_FILE_HEADER :
             this.readLocalFileHeader(structure);
@@ -110,7 +110,7 @@ Reader.prototype.readStructure = function () {
         default:
             throw new Error("Unknown ZIP structure signature: 0x" + structure.signature.toString(16));
     }
-    
+
     return structure;
 }
 
@@ -138,7 +138,7 @@ Reader.prototype.readLocalFileHeader = function (structure) {
 
     if (structure.signature !== LOCAL_FILE_HEADER)
         throw new Error("ZIP local file header signature invalid (expects 0x04034b50, actually 0x" + structure.signature.toString(16) +")");
-        
+
     structure.version_needed       = stream.readInteger(2);    // Version needed to extract (minimum)
     structure.flags                = stream.readInteger(2);    // General purpose bit flag
     structure.compression_method   = stream.readInteger(2);    // Compression method
@@ -149,10 +149,10 @@ Reader.prototype.readLocalFileHeader = function (structure) {
     structure.uncompressed_size    = stream.readInteger(4);    // Uncompressed size
     structure.file_name_length     = stream.readInteger(2);    // File name length (n)
     structure.extra_field_length   = stream.readInteger(2);    // Extra field length (m)
-    
+
     var n = structure.file_name_length;
     var m = structure.extra_field_length;
-    
+
     structure.file_name            = stream.readString(n);     // File name
     structure.extra_field          = stream.read(m);           // Extra fieldFile name
 
@@ -190,7 +190,7 @@ Reader.prototype.readCentralDirectoryFileHeader = function (structure) {
 
     if (structure.signature !== CENTRAL_DIRECTORY_FILE_HEADER)
         throw new Error("ZIP central directory file header signature invalid (expects 0x04034b50, actually 0x" + structure.signature.toString(16) +")");
-        
+
     structure.version                   = stream.readInteger(2);    // Version made by
     structure.version_needed            = stream.readInteger(2);    // Version needed to extract (minimum)
     structure.flags                     = stream.readInteger(2);    // General purpose bit flag
@@ -207,11 +207,11 @@ Reader.prototype.readCentralDirectoryFileHeader = function (structure) {
     structure.internal_file_attributes  = stream.readInteger(2);    // Internal file attributes
     structure.external_file_attributes  = stream.readInteger(4);    // External file attributes
     structure.local_file_header_offset  = stream.readInteger(4);    // Relative offset of local file header
-    
+
     var n = structure.file_name_length;
     var m = structure.extra_field_length;
     var k = structure.file_comment_length;
-    
+
     structure.file_name                 = stream.readString(n);     // File name
     structure.extra_field               = stream.read(m);           // Extra field
     structure.file_comment              = stream.readString(k);     // File comment
@@ -265,7 +265,7 @@ Reader.prototype.readEndOfCentralDirectoryRecord = function (structure) {
 
     if (structure.signature !== END_OF_CENTRAL_DIRECTORY_RECORD)
         throw new Error("ZIP end of central directory record signature invalid (expects 0x04034b50, actually 0x" + structure.signature.toString(16) +")");
-        
+
     structure.disk_number               = stream.readInteger(2);    // Number of this disk
     structure.central_dir_disk_number   = stream.readInteger(2);    // Disk where central directory starts
     structure.central_dir_disk_records  = stream.readInteger(2);    // Number of central directory records on this disk
@@ -277,7 +277,7 @@ Reader.prototype.readEndOfCentralDirectoryRecord = function (structure) {
     var n = structure.file_comment_length;
 
     structure.file_comment              = stream.readString(n);     // ZIP file comment
-    
+
     return structure;
 }
 
@@ -297,14 +297,14 @@ Reader.prototype.readDataDescriptor = function () {
 
 Reader.prototype.iterator = function () {
     var stream = this;
-    
+
     // find the end record and read it
     stream.locateEndOfCentralDirectoryRecord();
     var endRecord = stream.readEndOfCentralDirectoryRecord();
-    
+
     // seek to the beginning of the central directory
     stream.seek(endRecord.central_dir_offset);
-    
+
     var count = endRecord.central_dir_disk_records;
 
     return {
@@ -403,7 +403,7 @@ var bytesToNumberLE = function (bytes) {
         acc += bytes.get(i) << (8*i);
     return acc;
 };
- 
+
 var bytesToNumberBE = function (bytes) {
     var acc = 0;
     for (var i = 0; i < bytes.length; i++)
