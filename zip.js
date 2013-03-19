@@ -189,7 +189,7 @@ Reader.prototype.readCentralDirectoryFileHeader = function (structure) {
         structure.signature = stream.readInteger(4); // Central directory file header signature = 0x02014b50
 
     if (structure.signature !== CENTRAL_DIRECTORY_FILE_HEADER)
-        throw new Error("ZIP central directory file header signature invalid (expects 0x04034b50, actually 0x" + structure.signature.toString(16) +")");
+        throw new Error("ZIP central directory file header signature invalid (expects 0x02014b50, actually 0x" + structure.signature.toString(16) +")");
 
     structure.version                   = stream.readInteger(2);    // Version made by
     structure.version_needed            = stream.readInteger(2);    // Version needed to extract (minimum)
@@ -264,7 +264,7 @@ Reader.prototype.readEndOfCentralDirectoryRecord = function (structure) {
         structure.signature = stream.readInteger(4); // End of central directory signature = 0x06054b50
 
     if (structure.signature !== END_OF_CENTRAL_DIRECTORY_RECORD)
-        throw new Error("ZIP end of central directory record signature invalid (expects 0x04034b50, actually 0x" + structure.signature.toString(16) +")");
+        throw new Error("ZIP end of central directory record signature invalid (expects 0x06054b50, actually 0x" + structure.signature.toString(16) +")");
 
     structure.disk_number               = stream.readInteger(2);    // Number of this disk
     structure.central_dir_disk_number   = stream.readInteger(2);    // Disk where central directory starts
