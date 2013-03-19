@@ -27,5 +27,8 @@
     "repository": {
         "type": "git",
         "url": "git://github.com/kriskowal/zip.git"
+    },
+    "scripts": {
+        "test": "node test"
     }
 }
