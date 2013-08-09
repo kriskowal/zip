@@ -8,6 +8,7 @@ var fs = require("fs");
 var LOCAL_FILE_HEADER = 0x04034b50;
 var CENTRAL_DIRECTORY_FILE_HEADER = 0x02014b50;
 var END_OF_CENTRAL_DIRECTORY_RECORD = 0x06054b50;
+var MADE_BY_UNIX = 3;     // See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
 
 var Reader = exports.Reader = function (data) {
     if (!(this instanceof Reader))
@@ -215,8 +216,21 @@ Reader.prototype.readCentralDirectoryFileHeader = function (structure) {
     structure.file_name                 = stream.readString(n);     // File name
     structure.extra_field               = stream.read(m);           // Extra field
     structure.file_comment              = stream.readString(k);     // File comment
+    structure.mode                      = stream.detectChmod(structure.version, structure.external_file_attributes); // chmod
 
     return structure;
+}
+
+Reader.prototype.detectChmod = function(versionMadeBy, externalFileAttributes) {
+    var madeBy = versionMadeBy >> 8,
+        mode = externalFileAttributes >>> 16,
+        chmod = false;
+
+    mode = (mode & 0x1ff);
+    if (madeBy === MADE_BY_UNIX && (process.platform === 'darwin' || process.platform === 'linux')) {
+        chmod = mode.toString(8);
+    }
+    return chmod;
 }
 
 // finds the end of central directory record
@@ -328,7 +342,7 @@ Reader.prototype.iterator = function () {
             // seek back to the next central directory header
             stream.seek(saved);
 
-            return new Entry(localHeader, stream, start, centralHeader.compressed_size, centralHeader.compression_method);
+            return new Entry(localHeader, stream, start, centralHeader.compressed_size, centralHeader.compression_method, centralHeader.mode);
         }
     };
 };
@@ -366,7 +380,8 @@ Reader.prototype.toObject = function (charset) {
 Reader.prototype.close = function (mode, options) {
 };
 
-var Entry = exports.Entry = function (header, realStream, start, compressedSize, compressionMethod) {
+var Entry = exports.Entry = function (header, realStream, start, compressedSize, compressionMethod, mode) {
+    this._mode = mode;
     this._header = header;
 	this._realStream = realStream;
     this._stream = null;
@@ -399,6 +414,10 @@ Entry.prototype.getData = function () {
 		this._realStream.seek(bookmark);
 	}
     return this._stream;
+};
+
+Entry.prototype.getMode = function () {
+    return this._mode;
 };
 
 var bytesToNumberLE = function (bytes) {

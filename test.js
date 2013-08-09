@@ -11,7 +11,7 @@ var readFromBuffer = reader.toObject('utf-8');
 console.log(readFromBuffer);
 
 reader.forEach(function (entry) {
-    console.log(entry.getName(), entry.lastModified());
+    console.log(entry.getName(), entry.lastModified(), entry.getMode());
 });
 
 console.log("-------------------");
