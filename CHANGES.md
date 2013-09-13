@@ -1,3 +1,7 @@
+# 1.1.1
+
+-   Added ``getMode`` function to be able to
+    use fs.chmod on darwin and linux
 
 # 0.0.4
 
