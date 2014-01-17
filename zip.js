@@ -13,7 +13,7 @@ var MADE_BY_UNIX = 3;     // See http://www.pkware.com/documents/casestudies/APP
 var Reader = exports.Reader = function (data) {
     if (!(this instanceof Reader))
         return new Reader(data);
-	if (data instanceof Buffer)
+	if (Buffer.isBuffer(data))
 		this._source = new BufferSource(data);
 	else
 		this._source = new FdSource(data);
