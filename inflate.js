@@ -6,7 +6,7 @@
 */
 
 var BufferIO = require("./buffer-io").BufferIO;
-var Buffer = require("buffer").Buffer;
+var bops = require("bops");
 
 exports.inflate = function (input) {
 
@@ -318,7 +318,7 @@ exports.inflate = function (input) {
     function GET_BYTE() {
         if(inflate_data.length == inflate_pos)
         return -1;
-        return inflate_data.readUInt8(inflate_pos++);
+        return bops.readUInt8(inflate_data, inflate_pos++);
     }
 
     function NEEDBITS(n) {

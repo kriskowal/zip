@@ -1,5 +1,5 @@
 
-var Buffer = require("buffer").Buffer;
+var bops = require("bops");
 
 exports.BufferIO = function () {
     var self = {};
@@ -12,7 +12,7 @@ exports.BufferIO = function () {
     };
 
     self.write = function (buffer) {
-        buffers.push(new Buffer(buffer));
+        buffers.push(bops.from(buffer));
     };
 
     self.close = function () {
@@ -24,9 +24,9 @@ exports.BufferIO = function () {
     self.toBuffer = function () {
         consolidate(buffers);
         // for whatever reason, the buffer constructor does
-        // not copy buffers in v0.3.3
-        var buffer = new Buffer(buffers[0].length);
-        buffers[0].copy(buffer);
+        // not copy buffers in v0.3.3  XXX TODO: how about with bops?
+        var buffer = bops.create(buffers[0].length);
+        bops.copy(buffers[0], buffer, 0, 0, buffers[0].length);
         return buffer;
     };
 
@@ -45,11 +45,11 @@ function consolidate(buffers) {
         buffer = buffers[i];
         length += buffer.length;
     }
-    result = new Buffer(length);
+    result = bops.create(length);
     at = 0;
     for (i = 0; i < ii; i++) {
         buffer = buffers[i];
-        buffer.copy(result, at, 0);
+        bops.copy(buffer, result, at, 0, buffer.length);
         at += buffer.length;
     }
     buffers.splice(0, ii, result);
