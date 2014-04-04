@@ -318,7 +318,7 @@ exports.inflate = function (input) {
     function GET_BYTE() {
         if(inflate_data.length == inflate_pos)
         return -1;
-        return inflate_data.get(inflate_pos++);
+        return inflate_data.readUInt8(inflate_pos++);
     }
 
     function NEEDBITS(n) {

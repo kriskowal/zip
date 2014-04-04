@@ -13,7 +13,7 @@ var MADE_BY_UNIX = 3;     // See http://www.pkware.com/documents/casestudies/APP
 var Reader = exports.Reader = function (data) {
     if (!(this instanceof Reader))
         return new Reader(data);
-	if (data instanceof Buffer)
+	if (Buffer.isBuffer(data))
 		this._source = new BufferSource(data);
 	else
 		this._source = new FdSource(data);
@@ -423,14 +423,14 @@ Entry.prototype.getMode = function () {
 var bytesToNumberLE = function (bytes) {
     var acc = 0;
     for (var i = 0; i < bytes.length; i++)
-        acc += bytes.get(i) << (8*i);
+        acc += bytes.readUInt8(i) << (8*i);
     return acc;
 };
 
 var bytesToNumberBE = function (bytes) {
     var acc = 0;
     for (var i = 0; i < bytes.length; i++)
-        acc = (acc << 8) + bytes.get(i);
+        acc = (acc << 8) + bytes.readUInt8(i);
     return acc;
 };
 
