@@ -1,37 +1,37 @@
 {
-    "name": "zip",
-    "version": "1.1.1",
-    "description": "An implementation of unzip for JavaScript",
-    "keywords": [
-        "zip",
-        "compression"
-    ],
-    "homepage": "http://github.com/kriskowal/zip",
-    "author": "Kris Kowal <kris@cixar.com> (https://github.com/kriskowal)",
-    "contributors": [
-        "Tom Robinson (http://tlrobinson.net/)",
-        "Kris Kowal <kris@cixar.com> (http://github.com/kriskowal/)",
-        "Helios <helios.alonso@gmail.com>"
-    ],
-    "bugs": {
-        "email": "kris@cixar.com",
-        "url": "http://github.com/kriskowal/zip/issues"
-    },
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "http://github.com/kriskowal/zip/raw/master/LICENSE"
-        }
-    ],
-    "main": "zip.js",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/kriskowal/zip.git"
-    },
-    "scripts": {
-        "test": "node test"
-    },
-    "dependencies": {
-        "bops": "~0.1.1"
+  "name": "zip",
+  "version": "1.2.0",
+  "description": "An implementation of unzip for JavaScript",
+  "keywords": [
+    "zip",
+    "compression"
+  ],
+  "homepage": "http://github.com/kriskowal/zip",
+  "author": "Kris Kowal <kris@cixar.com> (https://github.com/kriskowal)",
+  "contributors": [
+    "Tom Robinson (http://tlrobinson.net/)",
+    "Kris Kowal <kris@cixar.com> (http://github.com/kriskowal/)",
+    "Helios <helios.alonso@gmail.com>"
+  ],
+  "bugs": {
+    "email": "kris@cixar.com",
+    "url": "http://github.com/kriskowal/zip/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/kriskowal/zip/raw/master/LICENSE"
     }
+  ],
+  "main": "zip.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kriskowal/zip.git"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "dependencies": {
+    "bops": "~0.1.1"
+  }
 }
