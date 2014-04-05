@@ -30,5 +30,8 @@
     },
     "scripts": {
         "test": "node test"
+    },
+    "dependencies": {
+        "bops": "~0.1.1"
     }
 }

@@ -2,7 +2,7 @@
 // Kris Kowal
 
 var INFLATE = require("./inflate");
-var Buffer = require("buffer").Buffer;
+var bops = require("bops");
 var fs = require("fs");
 
 var LOCAL_FILE_HEADER = 0x04034b50;
@@ -13,7 +13,7 @@ var MADE_BY_UNIX = 3;     // See http://www.pkware.com/documents/casestudies/APP
 var Reader = exports.Reader = function (data) {
     if (!(this instanceof Reader))
         return new Reader(data);
-	if (Buffer.isBuffer(data))
+	if (bops.is(data))
 		this._source = new BufferSource(data);
 	else
 		this._source = new FdSource(data);
@@ -26,7 +26,7 @@ function FdSource(fd) {
 		return this._fileLength;
 	}
 	this.read = function(start, length) {
-		var result = new Buffer(length);
+		var result = bops.create(length);
 		while (length > 0) {
 			var pos = 0;
 			var toRead = length > 8192? 8192: length;
@@ -45,7 +45,7 @@ function BufferSource(buffer) {
 		return buffer.length;
 	}
 	this.read = function (start, length) {
-		var bytes = this._buffer.slice(start, start+length);
+		var bytes = bops.subarray(this._buffer, start, start+length);
 		return bytes;
 	}
 }
@@ -76,7 +76,7 @@ Reader.prototype.readInteger = function (length, bigEndian) {
 }
 
 Reader.prototype.readString = function (length, charset) {
-    return this.read(length).toString(charset || "UTF-8");
+    return bops.to(this.read(length), charset || "utf8");
 }
 
 Reader.prototype.readUncompressed = function (length, method) {
@@ -423,14 +423,14 @@ Entry.prototype.getMode = function () {
 var bytesToNumberLE = function (bytes) {
     var acc = 0;
     for (var i = 0; i < bytes.length; i++)
-        acc += bytes.readUInt8(i) << (8*i);
+        acc += bops.readUInt8(bytes, i) << (8*i);
     return acc;
 };
 
 var bytesToNumberBE = function (bytes) {
     var acc = 0;
     for (var i = 0; i < bytes.length; i++)
-        acc = (acc << 8) + bytes.readUInt8(i);
+        acc = (acc << 8) + bops.readUInt8(bytes, i);
     return acc;
 };
 
@@ -438,14 +438,14 @@ var numberToBytesLE = function (number, length) {
     var bytes = [];
     for (var i = 0; i < length; i++)
         bytes[i] = (number >> (8*i)) & 0xFF;
-    return new Buffer(bytes);
+    return new bops.from(bytes);
 };
 
 var numberToBytesBE = function (number, length) {
     var bytes = [];
     for (var i = 0; i < length; i++)
         bytes[length-i-1] = (number >> (8*i)) & 0xFF;
-    return new Buffer(bytes);
+    return new bops.from(bytes);
 };
 
 var decodeDateTime = function (date, time) {
