@@ -1,8 +1,9 @@
 
-```javascript
-var ZIP = require("zip");
+```js
+var ZIP = require('zip')
 var data = new Buffer(...);
 var reader = ZIP.Reader(data);
+
 reader.toObject(charset_opt);
 reader.forEach(function (entry) {});
 reader.iterator();
