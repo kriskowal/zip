@@ -32,6 +32,6 @@
     "test": "node test"
   },
   "dependencies": {
-    "bops": "~0.1.1"
+    "bops": "~1.0.0"
   }
 }
