@@ -27,8 +27,8 @@ function FdSource(fd) {
 	}
 	this.read = function(start, length) {
 		var result = bops.create(length);
+		var pos = 0;
 		while (length > 0) {
-			var pos = 0;
 			var toRead = length > 8192? 8192: length;
 			fs.readSync(fd, result, pos, toRead, start);
 			length -= toRead;
